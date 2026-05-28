@@ -1,3 +1,4 @@
+using HireTrack.Api.Middleware;
 using HireTrack.Api.Common;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -52,6 +53,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<TenantContext>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
@@ -69,6 +71,7 @@ var app = builder.Build();
 app.MapOpenApi();
 app.UseCors("AllowVue");
 app.UseAuthentication();
+app.UseMiddleware<TenantMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 
