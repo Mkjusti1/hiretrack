@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HireTrack.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+995af36dfe4b60a5120f24ea13a1d91fc0b578b4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75ffa0e5895e792cb2a99e471977c2ec74e5e538")]
 [assembly: System.Reflection.AssemblyProductAttribute("HireTrack.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HireTrack.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

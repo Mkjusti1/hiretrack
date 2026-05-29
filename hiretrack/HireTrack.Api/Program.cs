@@ -61,7 +61,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowVue", policy =>
-        policy.WithOrigins("http://localhost:5173")
+        policy.SetIsOriginAllowed(_ => true)
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
