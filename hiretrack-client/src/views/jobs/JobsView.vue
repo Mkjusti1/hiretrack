@@ -16,7 +16,8 @@
           <div class="text-right">
             <p class="text-2xl font-bold text-blue-600">{{ job.applicationCount }}</p>
             <p class="text-xs text-gray-400">applicants</p>
-            <router-link :to="`/jobs/${job.id}/applications`" class="inline-block mt-2 text-sm text-blue-600 hover:underline">View pipeline →</router-link>
+<router-link :to="`/jobs/${job.id}/applications`" class="inline-block mt-2 text-sm text-blue-600 hover:underline">View pipeline →</router-link>
+<button @click="archiveJob(job.id)" class="inline-block mt-1 text-xs text-red-400 hover:text-red-600">Archive</button>
           </div>
         </div>
       </div>
@@ -70,5 +71,10 @@ async function handleCreate() {
   } finally {
     creating.value = false
   }
+}
+async function archiveJob(id: string) {
+  if (!confirm('Archive this job?')) return
+  await client.delete(`/api/jobs/${id}`)
+  await loadJobs()
 }
 </script>
