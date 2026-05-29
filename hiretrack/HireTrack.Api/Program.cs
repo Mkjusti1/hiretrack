@@ -1,3 +1,4 @@
+using HireTrack.Api.Hubs;
 using HireTrack.Api.Middleware;
 using HireTrack.Api.Common;
 using dotenv.net;
@@ -52,6 +53,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+builder.Services.AddSignalR();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<TenantContext>();
 builder.Services.AddControllers();
@@ -74,5 +76,6 @@ app.UseAuthentication();
 app.UseMiddleware<TenantMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<PipelineHub>("/hubs/pipeline");
 
 app.Run();
