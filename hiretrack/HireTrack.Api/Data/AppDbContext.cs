@@ -14,6 +14,7 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
     public DbSet<Candidate> Candidates => Set<Candidate>();
     public DbSet<Application> Applications => Set<Application>();
     public DbSet<ApplicationEvent> ApplicationEvents => Set<ApplicationEvent>();
+    public DbSet<Interview> Interviews => Set<Interview>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -100,6 +101,20 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
             e.HasOne(ae => ae.Actor)
              .WithMany()
              .HasForeignKey(ae => ae.ActorId)
+             .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<Interview>(e =>
+        {
+            e.HasKey(i => i.Id);
+            e.HasOne(i => i.Application)
+             .WithMany()
+             .HasForeignKey(i => i.ApplicationId)
+             .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(i => i.Interviewer)
+             .WithMany()
+             .HasForeignKey(i => i.InterviewerId)
              .OnDelete(DeleteBehavior.Restrict);
         });
     }

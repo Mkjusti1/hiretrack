@@ -38,3 +38,19 @@ export interface StageEvent {
   note: string | null
   createdAt: string
 }
+
+export interface Interview {
+  id: string
+  applicationId: string
+  candidateName: string
+  jobTitle: string
+  interviewerId: string
+  interviewerName: string
+  scheduledAt: string
+  location: string | null
+  notes: string | null
+  feedbackSubmitted: boolean
+  rating: number | null
+  feedbackNotes: string | null
+  createdAt: string
+}
