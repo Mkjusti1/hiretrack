@@ -3,8 +3,9 @@
     <nav class="bg-white border-b px-6 py-4 flex justify-between items-center">
       <h1 class="text-xl font-bold text-blue-600">HireTrack</h1>
       <div class="flex items-center gap-4">
-        <router-link to="/jobs" class="text-sm text-gray-600 hover:text-blue-600">Jobs</router-link>
-        <button @click="handleLogout" class="text-sm text-red-500 hover:text-red-700">Logout</button>
+<router-link to="/jobs" class="text-sm text-gray-600 hover:text-blue-600">Jobs</router-link>
+<router-link to="/candidates" class="text-sm text-gray-600 hover:text-blue-600">Candidates</router-link>       
+ <button @click="handleLogout" class="text-sm text-red-500 hover:text-red-700">Logout</button>
       </div>
     </nav>
     <div class="max-w-4xl mx-auto px-6 py-10">

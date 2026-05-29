@@ -37,8 +37,10 @@
           <input v-model="form.candidatePhone" placeholder="Phone (optional)" class="w-full border rounded-lg px-3 py-2 text-sm" />
           <textarea v-model="form.coverNote" placeholder="Cover note (optional)" class="w-full border rounded-lg px-3 py-2 text-sm" rows="3" />
           <div class="flex gap-3 pt-2">
-            <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium">Add</button>
-            <button type="button" @click="showCreate = false" class="flex-1 border py-2 rounded-lg text-sm">Cancel</button>
+<button type="submit" :disabled="creating" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium disabled:opacity-50">
+  {{ creating ? 'Adding...' : 'Add' }}
+</button>           
+ <button type="button" @click="showCreate = false" class="flex-1 border py-2 rounded-lg text-sm">Cancel</button>
           </div>
         </form>
       </div>
@@ -92,10 +94,16 @@ async function moveStage(appId: string, toStage: string) {
 }
 
 async function handleCreate() {
-  await client.post('/api/applications', { jobId, ...form.value })
-  showCreate.value = false
-  form.value = { candidateName: '', candidateEmail: '', candidatePhone: '', coverNote: '' }
-  const res = await client.get<Application[]>(`/api/applications?jobId=${jobId}`)
-  applications.value = res.data
+  if (creating.value) return
+  creating.value = true
+  try {
+    await client.post('/api/applications', { jobId, ...form.value })
+    showCreate.value = false
+    form.value = { candidateName: '', candidateEmail: '', candidatePhone: '', coverNote: '' }
+    const res = await client.get<Application[]>(`/api/applications?jobId=${jobId}`)
+    applications.value = res.data
+  } finally {
+    creating.value = false
+  }
 }
 </script>

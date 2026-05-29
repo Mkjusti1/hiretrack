@@ -31,8 +31,10 @@
           <input v-model="form.location" placeholder="Location" required class="w-full border rounded-lg px-3 py-2 text-sm" />
           <textarea v-model="form.description" placeholder="Description (optional)" class="w-full border rounded-lg px-3 py-2 text-sm" rows="3" />
           <div class="flex gap-3 pt-2">
-            <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700">Create</button>
-            <button type="button" @click="showCreate = false" class="flex-1 border py-2 rounded-lg text-sm">Cancel</button>
+<button type="submit" :disabled="creating" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
+  {{ creating ? 'Creating...' : 'Create' }}
+</button>            
+<button type="button" @click="showCreate = false" class="flex-1 border py-2 rounded-lg text-sm">Cancel</button>
           </div>
         </form>
       </div>
@@ -47,6 +49,7 @@ import type { Job } from '../../types'
 
 const jobs = ref<Job[]>([])
 const showCreate = ref(false)
+const creating = ref(false)
 const form = ref({ title: '', department: '', location: '', description: '' })
 
 onMounted(async () => { await loadJobs() })
@@ -57,9 +60,15 @@ async function loadJobs() {
 }
 
 async function handleCreate() {
-  await client.post('/api/jobs', form.value)
-  showCreate.value = false
-  form.value = { title: '', department: '', location: '', description: '' }
-  await loadJobs()
+  if (creating.value) return
+  creating.value = true
+  try {
+    await client.post('/api/jobs', form.value)
+    showCreate.value = false
+    form.value = { title: '', department: '', location: '', description: '' }
+    await loadJobs()
+  } finally {
+    creating.value = false
+  }
 }
 </script>
