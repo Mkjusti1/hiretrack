@@ -15,85 +15,51 @@ namespace HireTrack.Api.Features.Applications;
 [Authorize]
 public class ApplicationsController : ControllerBase
 {
- private readonly AppDbContext _db;
-private readonly TenantContext _tenant;
-private readonly IHubContext<PipelineHub> _hub;
+    private readonly AppDbContext _db;
+    private readonly TenantContext _tenant;
+    private readonly IHubContext<PipelineHub> _hub;
 
-public ApplicationsController(AppDbContext db, TenantContext tenant, IHubContext<PipelineHub> hub)
-{
-    _db = db;
-    _tenant = tenant;
-    _hub = hub;
-}
-
-   [HttpGet("{id}")]
-public async Task<IActionResult> GetById(Guid id)
-{
-    var application = await _db.Applications
-        .Where(a => a.TenantId == _tenant.TenantId && a.Id == id)
-        .Include(a => a.Job)
-        .Include(a => a.Candidate)
-        .Include(a => a.Events)
-        .FirstOrDefaultAsync();
-
-    if (application == null) return NotFound();
-
-    return Ok(MapToResponse(application));
-}
-   [HttpPut("{id}/stage")]
-public async Task<IActionResult> MoveStage(Guid id, MoveStageRequest req)
-{
-    var application = await _db.Applications
-        .Where(a => a.TenantId == _tenant.TenantId && a.Id == id)
-        .Include(a => a.Job)
-        .Include(a => a.Candidate)
-        .Include(a => a.Events)
-        .FirstOrDefaultAsync();
-
-    if (application == null) return NotFound();
-
-    if (!Enum.TryParse<ApplicationStage>(req.ToStage, out var toStage))
-        return BadRequest(new { message = "Invalid stage value." });
-
-    if (!ApplicationStateMachine.CanTransition(application.Stage, toStage))
+    public ApplicationsController(AppDbContext db, TenantContext tenant, IHubContext<PipelineHub> hub)
     {
-        var allowed = ApplicationStateMachine.GetAllowedTransitions(application.Stage);
-        return UnprocessableEntity(new
-        {
-            message = $"Cannot transition from {application.Stage} to {toStage}.",
-            allowedTransitions = allowed.Select(s => s.ToString())
-        });
+        _db = db;
+        _tenant = tenant;
+        _hub = hub;
     }
 
-    var fromStage = application.Stage;
-    application.Stage = toStage;
-    application.UpdatedAt = DateTime.UtcNow;
-
-    _db.ApplicationEvents.Add(new ApplicationEvent
+    [HttpGet]
+    public async Task<IActionResult> GetAll([FromQuery] Guid? jobId)
     {
-        ApplicationId = application.Id,
-        ActorId = _tenant.UserId,
-        FromStage = fromStage,
-        ToStage = toStage,
-        Note = req.Note
-    });
+        var query = _db.Applications
+            .Where(a => a.TenantId == _tenant.TenantId)
+            .Include(a => a.Job)
+            .Include(a => a.Candidate)
+            .Include(a => a.Events)
+            .AsQueryable();
 
-    await _db.SaveChangesAsync();
+        if (jobId.HasValue)
+            query = query.Where(a => a.JobId == jobId.Value);
 
-    var response = MapToResponse(application);
+        var applications = await query
+            .OrderByDescending(a => a.CreatedAt)
+            .ToListAsync();
 
-    await _hub.Clients.Group($"job-{application.JobId}")
-        .SendAsync("StageChanged", new
-        {
-            applicationId = application.Id,
-            jobId = application.JobId,
-            candidateName = application.Candidate?.Name,
-            fromStage = fromStage.ToString(),
-            toStage = toStage.ToString()
-        });
+        return Ok(applications.Select(MapToResponse));
+    }
 
-    return Ok(response);
-}
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var application = await _db.Applications
+            .Where(a => a.TenantId == _tenant.TenantId && a.Id == id)
+            .Include(a => a.Job)
+            .Include(a => a.Candidate)
+            .Include(a => a.Events)
+            .FirstOrDefaultAsync();
+
+        if (application == null) return NotFound();
+
+        return Ok(MapToResponse(application));
+    }
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateApplicationRequest req)
@@ -105,7 +71,6 @@ public async Task<IActionResult> MoveStage(Guid id, MoveStageRequest req)
         if (job.Status != JobStatus.Open)
             return BadRequest(new { message = "Job is not open for applications." });
 
-        // Find or create candidate
         var candidate = await _db.Candidates
             .FirstOrDefaultAsync(c => c.TenantId == _tenant.TenantId && c.Email == req.CandidateEmail);
 
@@ -122,7 +87,6 @@ public async Task<IActionResult> MoveStage(Guid id, MoveStageRequest req)
             await _db.SaveChangesAsync();
         }
 
-        // Check for duplicate application
         var existing = await _db.Applications
             .AnyAsync(a => a.JobId == req.JobId && a.CandidateId == candidate.Id);
 
@@ -140,7 +104,6 @@ public async Task<IActionResult> MoveStage(Guid id, MoveStageRequest req)
 
         _db.Applications.Add(application);
 
-        // Write initial audit event
         _db.ApplicationEvents.Add(new ApplicationEvent
         {
             ApplicationId = application.Id,
@@ -157,6 +120,61 @@ public async Task<IActionResult> MoveStage(Guid id, MoveStageRequest req)
         await _db.Entry(application).Collection(a => a.Events).LoadAsync();
 
         return CreatedAtAction(nameof(GetById), new { id = application.Id }, MapToResponse(application));
+    }
+
+    [HttpPut("{id}/stage")]
+    public async Task<IActionResult> MoveStage(Guid id, MoveStageRequest req)
+    {
+        var application = await _db.Applications
+            .Where(a => a.TenantId == _tenant.TenantId && a.Id == id)
+            .Include(a => a.Job)
+            .Include(a => a.Candidate)
+            .Include(a => a.Events)
+            .FirstOrDefaultAsync();
+
+        if (application == null) return NotFound();
+
+        if (!Enum.TryParse<ApplicationStage>(req.ToStage, out var toStage))
+            return BadRequest(new { message = "Invalid stage value." });
+
+        if (!ApplicationStateMachine.CanTransition(application.Stage, toStage))
+        {
+            var allowed = ApplicationStateMachine.GetAllowedTransitions(application.Stage);
+            return UnprocessableEntity(new
+            {
+                message = $"Cannot transition from {application.Stage} to {toStage}.",
+                allowedTransitions = allowed.Select(s => s.ToString())
+            });
+        }
+
+        var fromStage = application.Stage;
+        application.Stage = toStage;
+        application.UpdatedAt = DateTime.UtcNow;
+
+        _db.ApplicationEvents.Add(new ApplicationEvent
+        {
+            ApplicationId = application.Id,
+            ActorId = _tenant.UserId,
+            FromStage = fromStage,
+            ToStage = toStage,
+            Note = req.Note
+        });
+
+        await _db.SaveChangesAsync();
+
+        var response = MapToResponse(application);
+
+        await _hub.Clients.Group($"job-{application.JobId}")
+            .SendAsync("StageChanged", new
+            {
+                applicationId = application.Id,
+                jobId = application.JobId,
+                candidateName = application.Candidate?.Name,
+                fromStage = fromStage.ToString(),
+                toStage = toStage.ToString()
+            });
+
+        return Ok(response);
     }
 
     private static ApplicationResponse MapToResponse(Application a) => new(

@@ -7,4 +7,17 @@ export default defineConfig({
     vue(),
     tailwindcss(),
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5140',
+        changeOrigin: true,
+      },
+      '/hubs': {
+        target: 'http://localhost:5140',
+        changeOrigin: true,
+        ws: true,
+      }
+    }
+  }
 })

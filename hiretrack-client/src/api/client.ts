@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const client = axios.create({
-  baseURL: 'https://automatic-space-happiness-69pvxj5j6jj93559-5140.app.github.dev/',
+  baseURL: '',
 })
 
 client.interceptors.request.use((config) => {

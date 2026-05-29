@@ -180,7 +180,7 @@ async function loadTeamMembers() {
 }
 onMounted(async () => {
   await Promise.all([loadAll(), loadTeamMembers()])
-  const baseUrl = 'https://automatic-space-happiness-69pvxj5j6jj93559-5140.app.github.dev'
+  const baseUrl = ''
   const token = localStorage.getItem('token')
   connection = new signalR.HubConnectionBuilder()
     .withUrl(`${baseUrl}/hubs/pipeline`, { accessTokenFactory: () => token ?? '' })
