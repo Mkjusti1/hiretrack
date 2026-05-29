@@ -1,0 +1,16 @@
+{
+  "name": "HireTrack",
+  "forwardPorts": [5140, 5173],
+  "portsAttributes": {
+    "5140": {
+      "label": "HireTrack API",
+      "onAutoForward": "silent",
+      "visibility": "public"
+    },
+    "5173": {
+      "label": "HireTrack Frontend",
+      "onAutoForward": "silent",
+      "visibility": "public"
+    }
+  }
+}
