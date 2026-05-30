@@ -183,7 +183,9 @@ async function loadTeamMembers() {
 }
 onMounted(async () => {
   await Promise.all([loadAll(), loadTeamMembers()])
-  const baseUrl = ''
+  const baseUrl = import.meta.env.PROD
+  ? 'https://hiretrack-api-46e7.onrender.com'
+  : ''
   const token = localStorage.getItem('token')
   connection = new signalR.HubConnectionBuilder()
     .withUrl(`${baseUrl}/hubs/pipeline`, { accessTokenFactory: () => token ?? '' })
