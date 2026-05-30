@@ -3,7 +3,10 @@
     <nav class="bg-white border-b px-6 py-4 flex justify-between items-center">
       <router-link to="/jobs" class="text-xl font-bold text-blue-600">← Jobs</router-link>
       <h2 class="font-semibold text-gray-700">{{ jobTitle }} — Pipeline</h2>
-      <button @click="showCreate = true" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">+ Add Applicant</button>
+<div class="flex gap-2">
+  <button @click="exportCsv" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-50">↓ Export CSV</button>
+  <button @click="showCreate = true" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">+ Add Applicant</button>
+</div>
     </nav>
     <div class="max-w-7xl mx-auto px-6 py-8">
       <div class="grid grid-cols-6 gap-4">
@@ -237,5 +240,19 @@ async function handleFeedback() {
     showFeedback.value = false
     await loadAll()
   } finally { submittingFeedback.value = false }
+}
+
+async function exportCsv() {
+  const token = localStorage.getItem('token')
+  const url = `/api/export/applications?jobId=${jobId}`
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  const blob = await res.blob()
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = `applications-${jobId}-${new Date().toISOString().slice(0, 10)}.csv`
+  link.click()
+  URL.revokeObjectURL(link.href)
 }
 </script>

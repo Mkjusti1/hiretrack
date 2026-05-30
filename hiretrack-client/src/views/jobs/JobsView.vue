@@ -2,7 +2,10 @@
   <div class="min-h-screen bg-gray-50">
     <nav class="bg-white border-b px-6 py-4 flex justify-between items-center">
       <router-link to="/dashboard" class="text-xl font-bold text-blue-600">HireTrack</router-link>
-      <button @click="showCreate = true" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">+ New Job</button>
+<div class="flex gap-2">
+  <button @click="exportAll" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-50">↓ Export All</button>
+  <button @click="showCreate = true" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">+ New Job</button>
+</div>
     </nav>
     <div class="max-w-5xl mx-auto px-6 py-10">
       <h2 class="text-2xl font-bold text-gray-900 mb-6">Job Listings</h2>
@@ -76,5 +79,17 @@ async function archiveJob(id: string) {
   if (!confirm('Archive this job?')) return
   await client.delete(`/api/jobs/${id}`)
   await loadJobs()
+}
+async function exportAll() {
+  const token = localStorage.getItem('token')
+  const res = await fetch('/api/export/applications', {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  const blob = await res.blob()
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = `all-applications-${new Date().toISOString().slice(0, 10)}.csv`
+  link.click()
+  URL.revokeObjectURL(link.href)
 }
 </script>
