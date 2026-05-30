@@ -10,19 +10,26 @@
     <div class="max-w-5xl mx-auto px-6 py-10">
       <h2 class="text-2xl font-bold text-gray-900 mb-6">Job Listings</h2>
       <div class="space-y-4">
-        <div v-for="job in jobs" :key="job.id" class="bg-white rounded-xl p-5 shadow-sm border flex justify-between items-center">
-          <div>
-            <h3 class="font-semibold text-gray-900">{{ job.title }}</h3>
-            <p class="text-sm text-gray-500">{{ job.department }} · {{ job.location }}</p>
-            <span class="inline-block mt-2 text-xs px-2 py-1 rounded-full" :class="job.status === 'Open' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'">{{ job.status }}</span>
-          </div>
-          <div class="text-right">
-            <p class="text-2xl font-bold text-blue-600">{{ job.applicationCount }}</p>
-            <p class="text-xs text-gray-400">applicants</p>
-<router-link :to="`/jobs/${job.id}/applications`" class="inline-block mt-2 text-sm text-blue-600 hover:underline">View pipeline →</router-link>
-<button @click="archiveJob(job.id)" class="inline-block mt-1 text-xs text-red-400 hover:text-red-600">Archive</button>
-          </div>
-        </div>
+      <div v-for="job in jobs" :key="job.id" class="bg-white rounded-xl p-5 shadow-sm border flex justify-between items-center">
+  <div>
+    <h3 class="font-semibold text-gray-900">{{ job.title }}</h3>
+    <p class="text-sm text-gray-500">{{ job.department }} · {{ job.location }}</p>
+    <span class="inline-block mt-2 text-xs px-2 py-1 rounded-full"
+      :class="job.status === 'Open' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'">
+      {{ job.status }}
+    </span>
+  </div>
+  <div class="text-right">
+    <p class="text-2xl font-bold text-blue-600">{{ job.applicationCount }}</p>
+    <p class="text-xs text-gray-400">applicants</p>
+    <router-link :to="`/jobs/${job.id}/applications`" class="inline-block mt-2 text-sm text-blue-600 hover:underline">View pipeline →</router-link>
+    <div class="flex gap-2 mt-1 justify-end">
+      <button v-if="job.status === 'Open'" @click="archiveJob(job.id)" class="text-xs text-orange-400 hover:text-orange-600">Archive</button>
+      <button v-if="job.status === 'Archived'" @click="unarchiveJob(job.id)" class="text-xs text-green-500 hover:text-green-700">Unarchive</button>
+      <button @click="deleteJob(job.id)" class="text-xs text-red-400 hover:text-red-600">Delete</button>
+    </div>
+  </div>
+</div>
       </div>
     </div>
     <!-- Create Job Modal -->
@@ -78,6 +85,16 @@ async function handleCreate() {
 async function archiveJob(id: string) {
   if (!confirm('Archive this job?')) return
   await client.delete(`/api/jobs/${id}`)
+  await loadJobs()
+}
+async function unarchiveJob(id: string) {
+  await client.put(`/api/jobs/${id}/unarchive`)
+  await loadJobs()
+}
+
+async function deleteJob(id: string) {
+  if (!confirm('Permanently delete this job? This cannot be undone.')) return
+  await client.delete(`/api/jobs/${id}/permanent`)
   await loadJobs()
 }
 async function exportAll() {

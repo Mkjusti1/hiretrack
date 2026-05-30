@@ -130,4 +130,32 @@ public class JobsController : ControllerBase
 
         return NoContent();
     }
+    [HttpPut("{id}/unarchive")]
+public async Task<IActionResult> Unarchive(Guid id)
+{
+    var job = await _db.Jobs
+        .FirstOrDefaultAsync(j => j.TenantId == _tenant.TenantId && j.Id == id);
+
+    if (job == null) return NotFound();
+
+    job.Status = JobStatus.Open;
+    job.UpdatedAt = DateTime.UtcNow;
+    await _db.SaveChangesAsync();
+
+    return NoContent();
+}
+
+[HttpDelete("{id}/permanent")]
+public async Task<IActionResult> DeletePermanent(Guid id)
+{
+    var job = await _db.Jobs
+        .FirstOrDefaultAsync(j => j.TenantId == _tenant.TenantId && j.Id == id);
+
+    if (job == null) return NotFound();
+
+    _db.Jobs.Remove(job);
+    await _db.SaveChangesAsync();
+
+    return NoContent();
+}
 }
