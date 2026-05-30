@@ -65,7 +65,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowVue", policy =>
         policy.WithOrigins(
             "http://localhost:5173",
-            "https://hiretrack-client-1jnzyzv1a-mkjusti1s-projects.vercel.app"
+            "https://hiretrack-client.vercel.app",
+            "https://hiretrack-client-git-main-mkjusti1s-projects.vercel.app"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
