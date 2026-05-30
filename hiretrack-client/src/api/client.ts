@@ -1,9 +1,6 @@
 import axios from 'axios'
 
-const isProduction = import.meta.env.PROD
-const baseURL = isProduction
-  ? 'https://hiretrack-api-46e7.onrender.com'
-  : ''
+const baseURL = import.meta.env.VITE_API_URL ?? ''
 
 const client = axios.create({ baseURL })
 
