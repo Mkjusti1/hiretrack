@@ -10,7 +10,7 @@ using System.Text;
 using HireTrack.Api.Data;
 using HireTrack.Api.Domain.Entities;
 
-DotEnv.Load();
+if (File.Exists(".env")) DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
