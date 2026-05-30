@@ -1,39 +1,43 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex items-center justify-center">
-    <div class="bg-white p-8 rounded-xl shadow w-full max-w-md">
-      <h1 class="text-2xl font-bold text-gray-900 mb-2">Create your account</h1>
-      <p class="text-gray-500 mb-6">Start hiring in minutes</p>
-      <div v-if="error" class="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">{{ error }}</div>
-      <form @submit.prevent="handleRegister" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-          <input v-model="form.companyName" type="text" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div class="grid grid-cols-2 gap-3">
+  <div style="min-height:100vh;background:#2C3E50;display:flex;align-items:center;justify-content:center;">
+    <div style="width:100%;max-width:440px;padding:0 16px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:28px;font-weight:500;color:#fff;letter-spacing:0.02em;">Hire<span style="color:#B08D57;">Track</span></div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:6px;">Create your company workspace</div>
+      </div>
+      <div style="background:var(--color-background-primary);border-radius:12px;padding:28px;border:0.5px solid rgba(255,255,255,0.08);">
+        <div v-if="error" style="background:#FCEBEB;color:#791F1F;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:16px;">{{ error }}</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-            <input v-model="form.firstName" type="text" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label style="font-size:11px;font-weight:500;color:var(--color-text-secondary);display:block;margin-bottom:5px;">Company name</label>
+            <input v-model="form.companyName" type="text" required style="width:100%;border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:9px 12px;font-size:13px;background:var(--color-background-secondary);color:var(--color-text-primary);" />
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+              <label style="font-size:11px;font-weight:500;color:var(--color-text-secondary);display:block;margin-bottom:5px;">First name</label>
+              <input v-model="form.firstName" type="text" required style="width:100%;border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:9px 12px;font-size:13px;background:var(--color-background-secondary);color:var(--color-text-primary);" />
+            </div>
+            <div>
+              <label style="font-size:11px;font-weight:500;color:var(--color-text-secondary);display:block;margin-bottom:5px;">Last name</label>
+              <input v-model="form.lastName" type="text" required style="width:100%;border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:9px 12px;font-size:13px;background:var(--color-background-secondary);color:var(--color-text-primary);" />
+            </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-            <input v-model="form.lastName" type="text" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label style="font-size:11px;font-weight:500;color:var(--color-text-secondary);display:block;margin-bottom:5px;">Email address</label>
+            <input v-model="form.email" type="email" required style="width:100%;border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:9px 12px;font-size:13px;background:var(--color-background-secondary);color:var(--color-text-primary);" />
           </div>
+          <div>
+            <label style="font-size:11px;font-weight:500;color:var(--color-text-secondary);display:block;margin-bottom:5px;">Password</label>
+            <input v-model="form.password" type="password" required style="width:100%;border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:9px 12px;font-size:13px;background:var(--color-background-secondary);color:var(--color-text-primary);" />
+          </div>
+          <button @click="handleRegister" :disabled="loading" style="width:100%;background:#B08D57;color:#fff;border:none;padding:11px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;margin-top:4px;">
+            {{ loading ? 'Creating account...' : 'Create account' }}
+          </button>
         </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input v-model="form.email" type="email" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <input v-model="form.password" type="password" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <button type="submit" :disabled="loading" class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50">
-          {{ loading ? 'Creating account...' : 'Create account' }}
-        </button>
-      </form>
-      <p class="text-center text-sm text-gray-500 mt-4">
-        Already have an account? <router-link to="/login" class="text-blue-600 hover:underline">Sign in</router-link>
-      </p>
+        <p style="text-align:center;font-size:12px;color:var(--color-text-secondary);margin-top:16px;">
+          Already have an account? <router-link to="/login" style="color:#B08D57;text-decoration:none;">Sign in</router-link>
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -57,8 +61,6 @@ async function handleRegister() {
     router.push('/dashboard')
   } catch (e: any) {
     error.value = e.response?.data?.message ?? 'Registration failed'
-  } finally {
-    loading.value = false
-  }
+  } finally { loading.value = false }
 }
 </script>

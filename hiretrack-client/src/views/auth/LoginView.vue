@@ -1,25 +1,29 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex items-center justify-center">
-    <div class="bg-white p-8 rounded-xl shadow w-full max-w-md">
-      <h1 class="text-2xl font-bold text-gray-900 mb-2">Sign in to HireTrack</h1>
-      <p class="text-gray-500 mb-6">Welcome back</p>
-      <div v-if="error" class="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">{{ error }}</div>
-      <form @submit.prevent="handleLogin" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input v-model="email" type="email" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+  <div style="min-height:100vh;background:#2C3E50;display:flex;align-items:center;justify-content:center;">
+    <div style="width:100%;max-width:400px;padding:0 16px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:28px;font-weight:500;color:#fff;letter-spacing:0.02em;">Hire<span style="color:#B08D57;">Track</span></div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:6px;">Sign in to your workspace</div>
+      </div>
+      <div style="background:var(--color-background-primary);border-radius:12px;padding:28px;border:0.5px solid rgba(255,255,255,0.08);">
+        <div v-if="error" style="background:#FCEBEB;color:#791F1F;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:16px;">{{ error }}</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <label style="font-size:11px;font-weight:500;color:var(--color-text-secondary);display:block;margin-bottom:5px;">Email address</label>
+            <input v-model="email" type="email" required @keyup.enter="handleLogin" style="width:100%;border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:9px 12px;font-size:13px;background:var(--color-background-secondary);color:var(--color-text-primary);" />
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:500;color:var(--color-text-secondary);display:block;margin-bottom:5px;">Password</label>
+            <input v-model="password" type="password" required @keyup.enter="handleLogin" style="width:100%;border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:9px 12px;font-size:13px;background:var(--color-background-secondary);color:var(--color-text-primary);" />
+          </div>
+          <button @click="handleLogin" :disabled="loading" style="width:100%;background:#B08D57;color:#fff;border:none;padding:11px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;margin-top:4px;">
+            {{ loading ? 'Signing in...' : 'Sign in' }}
+          </button>
         </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <input v-model="password" type="password" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <button type="submit" :disabled="loading" class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50">
-          {{ loading ? 'Signing in...' : 'Sign in' }}
-        </button>
-      </form>
-      <p class="text-center text-sm text-gray-500 mt-4">
-        No account? <router-link to="/register" class="text-blue-600 hover:underline">Register your company</router-link>
-      </p>
+        <p style="text-align:center;font-size:12px;color:var(--color-text-secondary);margin-top:16px;">
+          No account? <router-link to="/register" style="color:#B08D57;text-decoration:none;">Register your company</router-link>
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -43,9 +47,7 @@ async function handleLogin() {
     await auth.login(email.value, password.value)
     router.push('/dashboard')
   } catch (e: any) {
-    error.value = e.response?.data?.message ?? 'Login failed'
-  } finally {
-    loading.value = false
-  }
+    error.value = e.response?.data?.message ?? 'Invalid email or password'
+  } finally { loading.value = false }
 }
 </script>
