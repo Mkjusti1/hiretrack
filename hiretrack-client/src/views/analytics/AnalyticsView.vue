@@ -2,10 +2,10 @@
   <AppLayout>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
       <div>
-        <h1 style="font-size:22px;font-weight:500;color:var(--color-text-primary);">Analytics</h1>
-        <p style="font-size:12px;color:var(--color-text-secondary);margin-top:4px;">Pipeline performance overview</p>
+        <h1 style="font-size:22px;font-weight:500;color:var(--ht-text);">Analytics</h1>
+        <p style="font-size:12px;color:var(--ht-muted);margin-top:4px;">Pipeline performance overview</p>
       </div>
-      <select v-model="selectedJobId" @change="loadStats" style="border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:8px 12px;font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);">
+      <select v-model="selectedJobId" @change="loadStats" style="border:0.5px solid var(--ht-border);border-radius:8px;padding:8px 12px;font-size:12px;background:var(--ht-card);color:var(--ht-text);">
         <option value="">All Jobs</option>
         <option v-for="job in jobs" :key="job.id" :value="job.id">{{ job.title }}</option>
       </select>
@@ -13,20 +13,20 @@
 
     <div v-if="stats">
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;">
-        <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:16px;">
-          <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;">Total</div>
-          <div style="font-size:24px;font-weight:500;color:var(--color-text-primary);">{{ stats.summary.total }}</div>
+        <div style="background:var(--ht-card);border:0.5px solid var(--ht-border);border-radius:10px;padding:16px;">
+          <div style="font-size:11px;color:var(--ht-muted);margin-bottom:6px;">Total</div>
+          <div style="font-size:24px;font-weight:500;color:var(--ht-text);">{{ stats.summary.total }}</div>
         </div>
-        <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:16px;">
-          <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;">Active</div>
+        <div style="background:var(--ht-card);border:0.5px solid var(--ht-border);border-radius:10px;padding:16px;">
+          <div style="font-size:11px;color:var(--ht-muted);margin-bottom:6px;">Active</div>
           <div style="font-size:24px;font-weight:500;color:#2C3E50;">{{ stats.summary.active }}</div>
         </div>
-        <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:16px;">
-          <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;">Hired</div>
+        <div style="background:var(--ht-card);border:0.5px solid var(--ht-border);border-radius:10px;padding:16px;">
+          <div style="font-size:11px;color:var(--ht-muted);margin-bottom:6px;">Hired</div>
           <div style="font-size:24px;font-weight:500;color:#3B6D11;">{{ stats.summary.hired }}</div>
         </div>
-        <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:16px;">
-          <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;">Rejected</div>
+        <div style="background:var(--ht-card);border:0.5px solid var(--ht-border);border-radius:10px;padding:16px;">
+          <div style="font-size:11px;color:var(--ht-muted);margin-bottom:6px;">Rejected</div>
           <div style="font-size:24px;font-weight:500;color:#A32D2D;">{{ stats.summary.rejected }}</div>
         </div>
         <div style="background:#2C3E50;border:0.5px solid transparent;border-radius:10px;padding:16px;">
@@ -36,50 +36,50 @@
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-        <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:20px;">
-          <h3 style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:16px;">Applications by stage</h3>
+        <div style="background:var(--ht-card);border:0.5px solid var(--ht-border);border-radius:10px;padding:20px;">
+          <h3 style="font-size:13px;font-weight:500;color:var(--ht-text);margin-bottom:16px;">Applications by stage</h3>
           <div style="display:flex;flex-direction:column;gap:10px;">
             <div v-for="item in stats.byStage" :key="item.stage" style="display:flex;align-items:center;gap:10px;">
-              <div style="width:80px;font-size:11px;color:var(--color-text-secondary);">{{ item.stage }}</div>
-              <div style="flex:1;background:var(--color-background-secondary);border-radius:4px;height:20px;position:relative;overflow:hidden;">
+              <div style="width:80px;font-size:11px;color:var(--ht-muted);">{{ item.stage }}</div>
+              <div style="flex:1;background:var(--ht-page);border-radius:4px;height:20px;position:relative;overflow:hidden;">
                 <div :style="{ width: barWidth(item.count) + '%', height: '100%', background: stageColor(item.stage), borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '6px' }">
                   <span v-if="item.count > 0" style="font-size:10px;color:#fff;font-weight:500;">{{ item.count }}</span>
                 </div>
               </div>
-              <div style="width:20px;font-size:11px;color:var(--color-text-secondary);text-align:right;">{{ item.count }}</div>
+              <div style="width:20px;font-size:11px;color:var(--ht-muted);text-align:right;">{{ item.count }}</div>
             </div>
           </div>
         </div>
 
-        <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:20px;">
-          <h3 style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:16px;">Avg time in stage</h3>
-          <div v-if="stats.stageTimings.filter((s) => s.avgDays > 0).length === 0" style="text-align:center;padding:24px;color:var(--color-text-secondary);font-size:12px;">
+        <div style="background:var(--ht-card);border:0.5px solid var(--ht-border);border-radius:10px;padding:20px;">
+          <h3 style="font-size:13px;font-weight:500;color:var(--ht-text);margin-bottom:16px;">Avg time in stage</h3>
+          <div v-if="stats.stageTimings.filter((s) => s.avgDays > 0).length === 0" style="text-align:center;padding:24px;color:var(--ht-muted);font-size:12px;">
             Not enough data yet
           </div>
           <div v-else style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div v-for="item in stats.stageTimings.filter((s) => s.avgDays > 0)" :key="item.stage" style="background:var(--color-background-secondary);border-radius:8px;padding:12px;">
-              <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;">{{ item.stage }}</div>
-              <div style="font-size:18px;font-weight:500;color:var(--color-text-primary);">{{ item.avgDays }}<span style="font-size:11px;font-weight:400;color:var(--color-text-secondary);margin-left:3px;">days</span></div>
-              <div style="font-size:10px;color:var(--color-text-secondary);margin-top:2px;">{{ item.sampleSize }} sample{{ item.sampleSize !== 1 ? 's' : '' }}</div>
+            <div v-for="item in stats.stageTimings.filter((s) => s.avgDays > 0)" :key="item.stage" style="background:var(--ht-page);border-radius:8px;padding:12px;">
+              <div style="font-size:11px;color:var(--ht-muted);margin-bottom:4px;">{{ item.stage }}</div>
+              <div style="font-size:18px;font-weight:500;color:var(--ht-text);">{{ item.avgDays }}<span style="font-size:11px;font-weight:400;color:var(--ht-muted);margin-left:3px;">days</span></div>
+              <div style="font-size:10px;color:var(--ht-muted);margin-top:2px;">{{ item.sampleSize }} sample{{ item.sampleSize !== 1 ? 's' : '' }}</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:20px;">
-        <h3 style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:16px;">Applications — last 30 days</h3>
-        <div v-if="stats.applicationsOverTime.length === 0" style="text-align:center;padding:24px;color:var(--color-text-secondary);font-size:12px;">No applications in this period</div>
+      <div style="background:var(--ht-card);border:0.5px solid var(--ht-border);border-radius:10px;padding:20px;">
+        <h3 style="font-size:13px;font-weight:500;color:var(--ht-text);margin-bottom:16px;">Applications — last 30 days</h3>
+        <div v-if="stats.applicationsOverTime.length === 0" style="text-align:center;padding:24px;color:var(--ht-muted);font-size:12px;">No applications in this period</div>
         <div v-else style="display:flex;align-items:flex-end;gap:4px;height:100px;">
           <div v-for="item in stats.applicationsOverTime" :key="item.date" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
-            <span style="font-size:10px;color:var(--color-text-secondary);">{{ item.count }}</span>
+            <span style="font-size:10px;color:var(--ht-muted);">{{ item.count }}</span>
             <div :style="{ width: '100%', background: '#2C3E50', borderRadius: '4px 4px 0 0', height: chartHeight(item.count) + 'px' }"></div>
-            <span style="font-size:9px;color:var(--color-text-secondary);transform:rotate(-45deg);transform-origin:top left;white-space:nowrap;margin-top:4px;">{{ item.date }}</span>
+            <span style="font-size:9px;color:var(--ht-muted);transform:rotate(-45deg);transform-origin:top left;white-space:nowrap;margin-top:4px;">{{ item.date }}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <div v-else style="text-align:center;padding:80px;color:var(--color-text-secondary);font-size:13px;">Loading analytics...</div>
+    <div v-else style="text-align:center;padding:80px;color:var(--ht-muted);font-size:13px;">Loading analytics...</div>
   </AppLayout>
 </template>
 

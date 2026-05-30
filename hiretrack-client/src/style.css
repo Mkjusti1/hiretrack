@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+:root {
+  --ht-card: #ffffff;
+  --ht-page: #f4f5f7;
+  --ht-border: rgba(0,0,0,0.08);
+  --ht-text: #1a1a2e;
+  --ht-muted: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ht-card: #1e2a38;
+    --ht-page: #151f2b;
+    --ht-border: rgba(255,255,255,0.08);
+    --ht-text: #f0f0f0;
+    --ht-muted: #9ca3af;
+  }
+}
+
+body {
+  background: var(--ht-page);
+  color: var(--ht-text);
+}

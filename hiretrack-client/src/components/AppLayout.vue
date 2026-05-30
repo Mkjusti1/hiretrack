@@ -1,5 +1,5 @@
 <template>
-  <div style="display:flex;min-height:100vh;background:var(--color-background-tertiary);">
+  <div style="display:flex;min-height:100vh;background:var(--ht-page);">
     <aside style="width:220px;background:#2C3E50;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:10;">
       <div style="padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.08);">
         <span style="font-size:18px;font-weight:500;color:#fff;letter-spacing:0.02em;">Hire<span style="color:#B08D57;">Track</span></span>
