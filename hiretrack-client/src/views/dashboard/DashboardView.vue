@@ -4,7 +4,8 @@
       <h1 class="text-xl font-bold text-blue-600">HireTrack</h1>
       <div class="flex items-center gap-4">
 <router-link to="/jobs" class="text-sm text-gray-600 hover:text-blue-600">Jobs</router-link>
-<router-link to="/candidates" class="text-sm text-gray-600 hover:text-blue-600">Candidates</router-link>       
+<router-link to="/candidates" class="text-sm text-gray-600 hover:text-blue-600">Candidates</router-link> 
+<router-link to="/analytics" class="text-sm text-gray-600 hover:text-blue-600">Analytics</router-link>      
  <button @click="handleLogout" class="text-sm text-red-500 hover:text-red-700">Logout</button>
       </div>
     </nav>
